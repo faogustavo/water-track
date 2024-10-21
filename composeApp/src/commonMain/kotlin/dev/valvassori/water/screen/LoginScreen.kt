@@ -9,16 +9,23 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import dev.valvassori.water.components.LoadingStateButton
 import dev.valvassori.water.components.OrDivider
 import dev.valvassori.water.components.input.PasswordInput
 import dev.valvassori.water.components.input.UsernameInput
 import dev.valvassori.water.components.screen.BaseScreenBody
 import dev.valvassori.water.ext.defaultHorizontalPadding
+import dev.valvassori.water.helpers.State
+import dev.valvassori.water.viewmodel.LoginViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import watertrack.composeapp.generated.resources.Res
@@ -33,6 +40,27 @@ object LoginScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+        val viewModel = viewModel { LoginViewModel() }
+
+        val email by viewModel.email.collectAsState()
+        val password by viewModel.password.collectAsState()
+        val state by viewModel.state.collectAsState(State.Idle)
+
+        LaunchedEffect(state) {
+            when (state) {
+                is State.Error -> {
+                    // TODO: Show Error
+                }
+
+                is State.Success -> {
+                    navigator.replace(LoggedInScreen)
+                }
+
+                State.Loading, State.Idle -> {
+                    // Do Nothing
+                }
+            }
+        }
 
         BaseScreenBody(
             image = painterResource(Res.drawable.pana_drink),
@@ -40,8 +68,8 @@ object LoginScreen : Screen {
             subtitle = stringResource(Res.string.login_subtitle),
         ) {
             UsernameInput(
-                value = "",
-                onValueChange = {},
+                value = email,
+                onValueChange = viewModel::updateEmail,
                 modifier =
                     Modifier
                         .fillMaxWidth()
@@ -50,28 +78,24 @@ object LoginScreen : Screen {
             )
 
             PasswordInput(
-                value = "",
-                onValueChange = {},
+                value = password,
+                onValueChange = viewModel::updatePassword,
                 modifier =
                     Modifier
                         .fillMaxWidth()
                         .defaultHorizontalPadding(),
             )
 
-            Button(
-                onClick = {
-                    // TODO: Fake some auth call
-                    navigator.replace(LoggedInScreen)
-                },
-                shape = RoundedCornerShape(8.dp),
+            LoadingStateButton(
+                onClick = viewModel::authenticate,
+                text = stringResource(Res.string.login_button),
+                isLoading = state is State.Loading,
                 modifier =
                     Modifier
                         .fillMaxWidth()
                         .defaultHorizontalPadding()
                         .padding(top = 16.dp),
-            ) {
-                Text(stringResource(Res.string.login_button))
-            }
+            )
 
             OrDivider()
 
