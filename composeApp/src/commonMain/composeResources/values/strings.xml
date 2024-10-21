@@ -4,6 +4,9 @@
     <string name="password_input_label">Password</string>
     <string name="password_confirmation_input_label">Confirm password</string>
 
+    <string name="password_input_show_password">Show password</string>
+    <string name="password_input_hide_password">Hide password</string>
+
     <string name="back_button">Go back</string>
     <string name="or_divider">OR</string>
 
