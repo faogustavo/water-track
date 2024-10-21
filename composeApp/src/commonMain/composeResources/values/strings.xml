@@ -24,4 +24,10 @@
     <string name="forgot_password_submit">Recover your access</string>
     <string name="forgot_password_login_desc">Remember your password?</string>
     <string name="forgot_password_login_button">Login</string>
+
+    <string name="water_track_title">Water consumption tracking</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_settings">Settings</string>
+
+    <string name="settings_hello">Hello %1$s!</string>
 </resources>

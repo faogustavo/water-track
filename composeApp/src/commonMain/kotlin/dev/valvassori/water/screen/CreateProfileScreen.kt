@@ -11,13 +11,13 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import dev.valvassori.water.components.AuthenticationScreenBody
 import dev.valvassori.water.components.ButtonWithDesc
 import dev.valvassori.water.components.OrDivider
 import dev.valvassori.water.components.input.ConfirmPasswordInput
 import dev.valvassori.water.components.input.EmailInput
 import dev.valvassori.water.components.input.PasswordInput
 import dev.valvassori.water.components.input.UsernameInput
+import dev.valvassori.water.components.screen.BaseScreenBody
 import dev.valvassori.water.ext.defaultHorizontalPadding
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -29,12 +29,12 @@ import watertrack.composeapp.generated.resources.create_profile_subtitle
 import watertrack.composeapp.generated.resources.create_profile_title
 import watertrack.composeapp.generated.resources.pana_sign_up
 
-class CreateProfileScreen : Screen {
+object CreateProfileScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
 
-        AuthenticationScreenBody(
+        BaseScreenBody(
             image = painterResource(Res.drawable.pana_sign_up),
             title = stringResource(Res.string.create_profile_title),
             subtitle = stringResource(Res.string.create_profile_subtitle),

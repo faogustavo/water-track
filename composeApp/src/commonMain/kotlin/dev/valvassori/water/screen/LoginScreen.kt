@@ -14,10 +14,10 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import dev.valvassori.water.components.AuthenticationScreenBody
 import dev.valvassori.water.components.OrDivider
 import dev.valvassori.water.components.input.PasswordInput
 import dev.valvassori.water.components.input.UsernameInput
+import dev.valvassori.water.components.screen.BaseScreenBody
 import dev.valvassori.water.ext.defaultHorizontalPadding
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -29,12 +29,12 @@ import watertrack.composeapp.generated.resources.login_subtitle
 import watertrack.composeapp.generated.resources.login_title
 import watertrack.composeapp.generated.resources.pana_drink
 
-class LoginScreen : Screen {
+object LoginScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
 
-        AuthenticationScreenBody(
+        BaseScreenBody(
             image = painterResource(Res.drawable.pana_drink),
             title = stringResource(Res.string.login_title),
             subtitle = stringResource(Res.string.login_subtitle),
@@ -59,7 +59,10 @@ class LoginScreen : Screen {
             )
 
             Button(
-                onClick = {},
+                onClick = {
+                    // TODO: Fake some auth call
+                    navigator.replace(LoggedInScreen)
+                },
                 shape = RoundedCornerShape(8.dp),
                 modifier =
                     Modifier
@@ -74,7 +77,7 @@ class LoginScreen : Screen {
 
             Button(
                 onClick = {
-                    navigator.push(CreateProfileScreen())
+                    navigator.push(CreateProfileScreen)
                 },
                 shape = RoundedCornerShape(8.dp),
                 colors =

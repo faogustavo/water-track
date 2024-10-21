@@ -30,7 +30,7 @@ fun App() {
     AppTheme(
         materialYou = false, // TODO: Move to flag
     ) {
-        Navigator(LoginScreen()) { navigator ->
+        Navigator(LoginScreen) { navigator ->
             Scaffold {
                 Surface(modifier = Modifier.padding(it)) {
                     SlideTransition(navigator)
@@ -55,7 +55,7 @@ private fun BackButton(navigator: Navigator) {
                 tint = MaterialTheme.colorScheme.onPrimary,
                 modifier =
                     Modifier
-                        .size(32.dp)
+                        .size(24.dp)
                         .padding(top = 4.dp, start = 4.dp),
             )
         }
