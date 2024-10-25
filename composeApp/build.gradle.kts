@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -9,8 +10,10 @@ plugins {
 }
 
 kotlin {
+
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
@@ -28,11 +31,6 @@ kotlin {
     }
 
     sourceSets {
-
-        androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-        }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -49,6 +47,18 @@ kotlin {
             implementation(libs.voyager.tabNavigator)
 
             implementation(libs.arrow.core)
+        }
+
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+
+            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+            implementation(compose.uiTest)
+        }
+
+        androidMain.dependencies {
+            implementation(compose.preview)
+            implementation(libs.androidx.activity.compose)
         }
     }
 }
@@ -72,6 +82,20 @@ android {
                 .toInt()
         versionCode = 1
         versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+            all {
+                it.exclude(
+                    "**/screen/**",
+                    "**/components/**",
+                )
+            }
+        }
     }
     packaging {
         resources {
@@ -91,4 +115,6 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+    debugImplementation(libs.androidx.compose.testManifest)
+    androidTestImplementation(libs.androidx.compose.testJunit)
 }

@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import org.jetbrains.compose.resources.stringResource
@@ -72,7 +73,10 @@ private fun PasswordInputImpl(
             )
         },
         trailingIcon = {
-            IconButton(onClick = { isPasswordHidden = !isPasswordHidden }) {
+            IconButton(
+                onClick = { isPasswordHidden = !isPasswordHidden },
+                modifier = Modifier.testTag("PasswordVisibilityToggle"),
+            ) {
                 AnimatedContent(
                     targetState = isPasswordHidden,
                     transitionSpec = { fadeIn() togetherWith fadeOut() },
