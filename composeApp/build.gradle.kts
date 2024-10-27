@@ -43,6 +43,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
 
             implementation(libs.voyager.navigator)
+            implementation(libs.voyager.viewModel)
             implementation(libs.voyager.transitions)
             implementation(libs.voyager.tabNavigator)
 
@@ -93,6 +94,7 @@ android {
                 it.exclude(
                     "**/screen/**",
                     "**/components/**",
+                    "**/e2e/**",
                 )
             }
         }

@@ -13,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
@@ -42,7 +43,7 @@ object LoginScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
         val viewModel = viewModel { LoginViewModel() }
 
-        val email by viewModel.email.collectAsState()
+        val username by viewModel.username.collectAsState()
         val password by viewModel.password.collectAsState()
         val state by viewModel.state.collectAsState(State.Idle)
 
@@ -66,12 +67,14 @@ object LoginScreen : Screen {
             image = painterResource(Res.drawable.pana_drink),
             title = stringResource(Res.string.login_title),
             subtitle = stringResource(Res.string.login_subtitle),
+            modifier = Modifier.testTag("Screen.Login"),
         ) {
             UsernameInput(
-                value = email,
-                onValueChange = viewModel::updateEmail,
+                value = username,
+                onValueChange = viewModel::updateUsername,
                 modifier =
                     Modifier
+                        .testTag("Authentication.Username")
                         .fillMaxWidth()
                         .defaultHorizontalPadding()
                         .padding(top = 16.dp),
@@ -82,6 +85,7 @@ object LoginScreen : Screen {
                 onValueChange = viewModel::updatePassword,
                 modifier =
                     Modifier
+                        .testTag("Authentication.Password")
                         .fillMaxWidth()
                         .defaultHorizontalPadding(),
             )
@@ -92,6 +96,7 @@ object LoginScreen : Screen {
                 isLoading = state is State.Loading,
                 modifier =
                     Modifier
+                        .testTag("Authentication.Submit")
                         .fillMaxWidth()
                         .defaultHorizontalPadding()
                         .padding(top = 16.dp),
@@ -111,6 +116,7 @@ object LoginScreen : Screen {
                     ),
                 modifier =
                     Modifier
+                        .testTag("Authentication.SignUp")
                         .fillMaxWidth()
                         .defaultHorizontalPadding()
                         .padding(top = 16.dp),
@@ -125,6 +131,7 @@ object LoginScreen : Screen {
                 shape = RoundedCornerShape(8.dp),
                 modifier =
                     Modifier
+                        .testTag("Authentication.ForgotPassword")
                         .fillMaxWidth()
                         .defaultHorizontalPadding(),
             ) {

@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
@@ -29,7 +30,7 @@ fun LoadingStateButton(
     modifier: Modifier = Modifier,
 ) {
     Button(
-        onClick = onClick,
+        onClick = { if (!isLoading) onClick() },
         shape = RoundedCornerShape(8.dp),
         colors = colors,
         modifier = modifier,
@@ -66,5 +67,6 @@ private fun LoadingIndicator() {
     Text(
         text = ".".repeat(count + 1),
         fontWeight = FontWeight.Black,
+        modifier = Modifier.testTag("LoadingIndicator"),
     )
 }

@@ -28,6 +28,7 @@ fun BaseScreenBody(
     title: String,
     subtitle: String? = null,
     image: Painter? = null,
+    modifier: Modifier = Modifier,
     body: @Composable ColumnScope.() -> Unit,
 ) {
     val bodyModifier =
@@ -35,7 +36,13 @@ fun BaseScreenBody(
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
             .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
 
-    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.primary)) {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.primary)
+                .then(modifier),
+    ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier.fillMaxWidth(),

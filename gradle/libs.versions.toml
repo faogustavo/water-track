@@ -38,6 +38,7 @@ androidx-compose-testJunit = { module = "androidx.compose.ui:ui-test-junit4-andr
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
+voyager-viewModel = { module = "cafe.adriel.voyager:voyager-lifecycle-kmp", version.ref = "voyager" }
 
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
 

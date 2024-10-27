@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
-    private val _email = MutableStateFlow("")
+    private val _username = MutableStateFlow("")
     private val _password = MutableStateFlow("")
     private val _state =
         MutableSharedFlow<State<Unit, LoginError>>(
@@ -20,16 +20,16 @@ class LoginViewModel : ViewModel() {
             onBufferOverflow = BufferOverflow.DROP_OLDEST,
         )
 
-    val email = _email.asStateFlow()
+    val username = _username.asStateFlow()
     val password = _password.asStateFlow()
     val state = _state.asSharedFlow()
 
-    fun updateEmail(email: String) {
-        _email.value = email
+    fun updateUsername(value: String) {
+        _username.value = value
     }
 
-    fun updatePassword(password: String) {
-        _password.value = password
+    fun updatePassword(value: String) {
+        _password.value = value
     }
 
     fun authenticate() {

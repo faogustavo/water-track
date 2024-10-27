@@ -13,8 +13,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.annotation.ExperimentalVoyagerApi
+import cafe.adriel.voyager.jetpack.ProvideNavigatorLifecycleKMPSupport
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
 import dev.valvassori.water.screen.LoginScreen
@@ -24,17 +29,20 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import watertrack.composeapp.generated.resources.Res
 import watertrack.composeapp.generated.resources.back_button
 
+@OptIn(ExperimentalVoyagerApi::class)
 @Composable
 @Preview
 fun App() {
     AppTheme(
         materialYou = false, // TODO: Move to flag
     ) {
-        Navigator(LoginScreen) { navigator ->
-            Scaffold {
-                Surface(modifier = Modifier.padding(it)) {
-                    SlideTransition(navigator)
-                    BackButton(navigator)
+        ProvideNavigatorLifecycleKMPSupport {
+            Navigator(LoginScreen) { navigator ->
+                Scaffold(modifier = Modifier.testTag("App.Scaffold")) {
+                    Surface(modifier = Modifier.padding(it)) {
+                        SlideTransition(navigator)
+                        BackButton(navigator)
+                    }
                 }
             }
         }
@@ -48,7 +56,10 @@ private fun BackButton(navigator: Navigator) {
         enter = fadeIn(),
         exit = fadeOut(),
     ) {
-        IconButton(onClick = { navigator.pop() }) {
+        IconButton(
+            onClick = { navigator.pop() },
+            modifier = Modifier.testTag("Navigation.BackButton"),
+        ) {
             Icon(
                 imageVector = Icons.Default.ChevronLeft,
                 contentDescription = stringResource(Res.string.back_button),
