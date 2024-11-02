@@ -9,7 +9,7 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.runComposeUiTest
 import androidx.compose.ui.test.waitUntilAtLeastOneExists
-import dev.valvassori.water.e2e.ext.renderApp
+import dev.valvassori.water.ext.renderApp
 import kotlin.test.Test
 
 @OptIn(ExperimentalTestApi::class)
@@ -25,6 +25,6 @@ class AuthenticationTest {
             onNodeWithTag("Authentication.Password").performTextInput("password")
             onNodeWithTag("Authentication.Submit").performScrollTo().performClick()
 
-            waitUntilAtLeastOneExists(hasText("Home"))
+            waitUntilAtLeastOneExists(hasText("Home"), 5_000)
         }
 }

@@ -7,6 +7,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -38,6 +39,7 @@ object CreateProfileScreen : Screen {
             image = painterResource(Res.drawable.pana_sign_up),
             title = stringResource(Res.string.create_profile_title),
             subtitle = stringResource(Res.string.create_profile_subtitle),
+            modifier = Modifier.testTag("Screen.CreateProfile"),
         ) {
             UsernameInput(
                 value = "",

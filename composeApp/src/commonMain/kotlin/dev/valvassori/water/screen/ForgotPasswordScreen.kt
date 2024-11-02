@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -37,6 +38,7 @@ class ForgotPasswordScreen : Screen {
         BaseScreenBody(
             image = painterResource(Res.drawable.pana_forgot_password),
             title = stringResource(Res.string.forgot_password_title),
+            modifier = Modifier.testTag("Screen.ForgotPassword"),
         ) {
             Text(
                 text = stringResource(Res.string.forgot_password_info),

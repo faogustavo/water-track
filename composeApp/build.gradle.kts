@@ -94,6 +94,7 @@ android {
                 it.exclude(
                     "**/screen/**",
                     "**/components/**",
+                    "**/integration/**",
                     "**/e2e/**",
                 )
             }

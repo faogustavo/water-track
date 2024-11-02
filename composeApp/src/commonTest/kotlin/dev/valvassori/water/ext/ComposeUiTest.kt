@@ -1,4 +1,4 @@
-package dev.valvassori.water.e2e.ext
+package dev.valvassori.water.ext
 
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.ComposeUiTest
@@ -16,7 +16,9 @@ fun ComposeUiTest.renderApp() {
             override val lifecycle: LifecycleRegistry = LifecycleRegistry(this)
         }
 
-    testLifecycleOwner.lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    runOnUiThread {
+        testLifecycleOwner.lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    }
 
     setContent {
         CompositionLocalProvider(LocalLifecycleOwner provides testLifecycleOwner) {
