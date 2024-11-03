@@ -32,11 +32,13 @@ import watertrack.composeapp.generated.resources.password_input_show_password
 fun PasswordInput(
     value: String,
     onValueChange: (String) -> Unit,
+    errorMessage: String? = null,
     modifier: Modifier = Modifier,
 ) = PasswordInputImpl(
     value = value,
     onValueChange = onValueChange,
     label = stringResource(Res.string.password_input_label),
+    errorMessage = errorMessage,
     modifier = modifier,
 )
 
@@ -44,11 +46,13 @@ fun PasswordInput(
 fun ConfirmPasswordInput(
     value: String,
     onValueChange: (String) -> Unit,
+    errorMessage: String? = null,
     modifier: Modifier = Modifier,
 ) = PasswordInputImpl(
     value = value,
     onValueChange = onValueChange,
     label = stringResource(Res.string.password_confirmation_input_label),
+    errorMessage = errorMessage,
     modifier = modifier,
 )
 
@@ -57,6 +61,7 @@ private fun PasswordInputImpl(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
+    errorMessage: String?,
     modifier: Modifier,
 ) {
     var isPasswordHidden by remember { mutableStateOf(true) }
@@ -65,6 +70,14 @@ private fun PasswordInputImpl(
         value = value,
         onValueChange = onValueChange,
         label = { Text(label) },
+        isError = errorMessage != null,
+        supportingText = {
+            AnimatedContent(errorMessage) {
+                if (it != null) {
+                    Text(it)
+                }
+            }
+        },
         visualTransformation = if (isPasswordHidden) PasswordVisualTransformation() else VisualTransformation.None,
         leadingIcon = {
             Icon(

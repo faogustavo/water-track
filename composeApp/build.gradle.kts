@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.mockery)
 }
 
 kotlin {
@@ -120,4 +121,8 @@ dependencies {
     debugImplementation(compose.uiTooling)
     debugImplementation(libs.androidx.compose.testManifest)
     androidTestImplementation(libs.androidx.compose.testJunit)
+}
+
+mokkery {
+    defaultMockMode.set(dev.mokkery.MockMode.autoUnit)
 }

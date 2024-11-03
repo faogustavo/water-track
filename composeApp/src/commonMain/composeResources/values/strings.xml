@@ -7,6 +7,20 @@
     <string name="password_input_show_password">Show password</string>
     <string name="password_input_hide_password">Hide password</string>
 
+    <string name="input_validation_invalid_value">Please enter a valid value</string>
+
+    <string name="username_validation_empty">Username cannot be empty</string>
+    <string name="username_validation_short">Username must have at least 3 chars</string>
+    <string name="username_validation_long">Username must have at most 32 chars</string>
+    <string name="username_validation_invalid_char">Username cannot contain &amp;</string>
+
+    <string name="password_validation_empty">Password cannot be empty</string>
+    <string name="password_validation_short">Password must have at least 8 chars</string>
+
+    <string name="error_invalid_credentials">Invalid email or password</string>
+    <string name="error_network">Failed to connect to the server. Check your internet connection.</string>
+    <string name="error_unknown">Something went wrong. Please try again later.</string>
+
     <string name="back_button">Go back</string>
     <string name="or_divider">OR</string>
 

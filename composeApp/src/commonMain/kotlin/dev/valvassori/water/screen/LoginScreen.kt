@@ -26,15 +26,21 @@ import dev.valvassori.water.components.OrDivider
 import dev.valvassori.water.components.input.PasswordInput
 import dev.valvassori.water.components.input.UsernameInput
 import dev.valvassori.water.components.screen.BaseScreenBody
+import dev.valvassori.water.error.LoginError
 import dev.valvassori.water.ext.defaultHorizontalPadding
 import dev.valvassori.water.helpers.State
+import dev.valvassori.water.validator.UsernameValidator
 import dev.valvassori.water.viewmodel.LoginViewModel
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import watertrack.composeapp.generated.resources.Res
+import watertrack.composeapp.generated.resources.error_invalid_credentials
+import watertrack.composeapp.generated.resources.error_network
+import watertrack.composeapp.generated.resources.error_unknown
 import watertrack.composeapp.generated.resources.login_button
 import watertrack.composeapp.generated.resources.login_forgot_password_button
 import watertrack.composeapp.generated.resources.login_sign_up_button
@@ -53,19 +59,34 @@ fun LoginScreen(
     openForgotPasswordScreen: () -> Unit = {},
 ) {
     val username by viewModel.username.collectAsState()
+    val usernameValidation by viewModel.usernameValidation.collectAsState(UsernameValidator.ValidationState.Valid)
+
     val password by viewModel.password.collectAsState()
+    val passwordValidation by viewModel.passwordValidation.collectAsState()
+
     val state by viewModel.state.collectAsState(State.Idle)
 
     var errorMessage: String? by remember { mutableStateOf(null) }
 
+    LaunchedEffect(PAGE_NAME) {
+        analyticsLogger.logPageView()
+    }
+
     LaunchedEffect(state) {
-        when (state) {
+        when (val localState = state) {
             is State.Success -> {
                 openAuthenticatedScreen()
             }
 
             is State.Error -> {
-                errorMessage = "Something went wrong"
+                errorMessage =
+                    getString(
+                        when (localState.error) {
+                            LoginError.IncorrectCredentials -> Res.string.error_invalid_credentials
+                            LoginError.NetworkError -> Res.string.error_network
+                            LoginError.UnknownError -> Res.string.error_unknown
+                        },
+                    )
             }
 
             State.Loading, State.Idle -> {
@@ -74,13 +95,19 @@ fun LoginScreen(
         }
     }
 
-    LaunchedEffect(PAGE_NAME) {
-        analyticsLogger.logPageView()
+    LaunchedEffect(errorMessage) {
+        val localErrorMessage = errorMessage ?: return@LaunchedEffect
+        analyticsLogger.logError(localErrorMessage)
     }
 
-    LaunchedEffect(errorMessage) {
-        val localErrorMessage = errorMessage ?: return@LaunchedEffect // No error, no log
-        analyticsLogger.logError(localErrorMessage)
+    LaunchedEffect(usernameValidation) {
+        val usernameErrorMessage = usernameValidation.messageOrNull ?: return@LaunchedEffect
+        analyticsLogger.logError(getString(usernameErrorMessage))
+    }
+
+    LaunchedEffect(passwordValidation) {
+        val passwordErrorMessage = passwordValidation.messageOrNull ?: return@LaunchedEffect
+        analyticsLogger.logError(getString(passwordErrorMessage))
     }
 
     BaseScreenBody(
@@ -105,6 +132,7 @@ fun LoginScreen(
         UsernameInput(
             value = username,
             onValueChange = viewModel::updateUsername,
+            errorMessage = usernameValidation.messageOrNull?.let { stringResource(it) },
             modifier =
                 Modifier
                     .testTag("Authentication.Username")

@@ -1,5 +1,6 @@
 package dev.valvassori.water.components.input
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
@@ -15,12 +16,21 @@ import watertrack.composeapp.generated.resources.username_input_label
 fun UsernameInput(
     value: String,
     onValueChange: (String) -> Unit,
+    errorMessage: String? = null,
     modifier: Modifier = Modifier,
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         label = { Text(stringResource(Res.string.username_input_label)) },
+        isError = errorMessage != null,
+        supportingText = {
+            AnimatedContent(errorMessage) {
+                if (it != null) {
+                    Text(it)
+                }
+            }
+        },
         leadingIcon = {
             Icon(
                 Icons.Outlined.Person,

@@ -27,7 +27,7 @@ class SessionRepositoryImpl : SessionRepository {
                 }
 
                 delay(1500)
-                LoginError.InvalidCredentials.left()
+                LoginError.IncorrectCredentials.left()
             }
 
             "network_error" -> {
