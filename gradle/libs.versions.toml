@@ -15,7 +15,6 @@ androidx-compose-test = "1.7.4"
 compose-plugin = "1.7.0"
 junit = "4.13.2"
 kotlin = "2.0.20"
-voyager = "1.1.0-beta02"
 arrow = "1.2.4"
 
 [libraries]
@@ -35,10 +34,8 @@ androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle
 androidx-compose-testManifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-compose-test" }
 androidx-compose-testJunit = { module = "androidx.compose.ui:ui-test-junit4-android", version.ref = "androidx-compose-test" }
 
-voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
-voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
-voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
-voyager-viewModel = { module = "cafe.adriel.voyager:voyager-lifecycle-kmp", version.ref = "voyager" }
+compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version = "2.8.0-alpha10" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.7.0" }
 
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
 
@@ -46,5 +43,6 @@ arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

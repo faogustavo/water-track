@@ -7,19 +7,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.tab.Tab
-import cafe.adriel.voyager.navigator.tab.TabOptions
 import dev.valvassori.water.components.config.ClickableConfig
 import dev.valvassori.water.components.config.OnOffConfig
 import dev.valvassori.water.ext.defaultHorizontalPadding
@@ -28,28 +25,19 @@ import org.jetbrains.compose.resources.stringResource
 import watertrack.composeapp.generated.resources.Res
 import watertrack.composeapp.generated.resources.pana_avatar
 import watertrack.composeapp.generated.resources.settings_hello
-import watertrack.composeapp.generated.resources.tab_settings
 
-object SettingsTab : Tab {
-    override val options: TabOptions
-        @Composable get() =
-            TabOptions(
-                index = 1u,
-                title = stringResource(Res.string.tab_settings),
-                icon = rememberVectorPainter(Icons.Default.Settings),
-            )
-
-    @Composable
-    override fun Content() {
-        Column {
-            ProfileInfo()
-            HorizontalDivider()
-            NotificationConfig()
-            SectionDivider()
-            ThemeConfig()
-            SectionDivider()
-            AccountConfig()
-        }
+@Composable
+fun SettingsTab() {
+    Column(
+        modifier = Modifier.verticalScroll(rememberScrollState()),
+    ) {
+        ProfileInfo()
+        HorizontalDivider()
+        NotificationConfig()
+        SectionDivider()
+        ThemeConfig()
+        SectionDivider()
+        AccountConfig()
     }
 }
 

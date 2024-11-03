@@ -16,9 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.valvassori.water.components.LoadingStateButton
 import dev.valvassori.water.components.OrDivider
 import dev.valvassori.water.components.input.PasswordInput
@@ -37,106 +34,100 @@ import watertrack.composeapp.generated.resources.login_subtitle
 import watertrack.composeapp.generated.resources.login_title
 import watertrack.composeapp.generated.resources.pana_drink
 
-object LoginScreen : Screen {
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val viewModel = viewModel { LoginViewModel() }
+@Composable
+fun LoginScreen(
+    viewModel: LoginViewModel = viewModel { LoginViewModel() },
+    openAuthenticatedScreen: () -> Unit = {},
+    openCreateProfileScreen: () -> Unit = {},
+    openForgotPasswordScreen: () -> Unit = {},
+) {
+    val username by viewModel.username.collectAsState()
+    val password by viewModel.password.collectAsState()
+    val state by viewModel.state.collectAsState(State.Idle)
 
-        val username by viewModel.username.collectAsState()
-        val password by viewModel.password.collectAsState()
-        val state by viewModel.state.collectAsState(State.Idle)
+    LaunchedEffect(state) {
+        when (state) {
+            is State.Error -> {
+                // TODO: Show Error
+            }
 
-        LaunchedEffect(state) {
-            when (state) {
-                is State.Error -> {
-                    // TODO: Show Error
-                }
+            is State.Success -> openAuthenticatedScreen()
 
-                is State.Success -> {
-                    navigator.replace(LoggedInScreen)
-                }
-
-                State.Loading, State.Idle -> {
-                    // Do Nothing
-                }
+            State.Loading, State.Idle -> {
+                // Do Nothing
             }
         }
+    }
 
-        BaseScreenBody(
-            image = painterResource(Res.drawable.pana_drink),
-            title = stringResource(Res.string.login_title),
-            subtitle = stringResource(Res.string.login_subtitle),
-            modifier = Modifier.testTag("Screen.Login"),
+    BaseScreenBody(
+        image = painterResource(Res.drawable.pana_drink),
+        title = stringResource(Res.string.login_title),
+        subtitle = stringResource(Res.string.login_subtitle),
+        modifier = Modifier.testTag("Screen.Login"),
+    ) {
+        UsernameInput(
+            value = username,
+            onValueChange = viewModel::updateUsername,
+            modifier =
+                Modifier
+                    .testTag("Authentication.Username")
+                    .fillMaxWidth()
+                    .defaultHorizontalPadding()
+                    .padding(top = 16.dp),
+        )
+
+        PasswordInput(
+            value = password,
+            onValueChange = viewModel::updatePassword,
+            modifier =
+                Modifier
+                    .testTag("Authentication.Password")
+                    .fillMaxWidth()
+                    .defaultHorizontalPadding(),
+        )
+
+        LoadingStateButton(
+            onClick = viewModel::authenticate,
+            text = stringResource(Res.string.login_button),
+            isLoading = state is State.Loading,
+            modifier =
+                Modifier
+                    .testTag("Authentication.Submit")
+                    .fillMaxWidth()
+                    .defaultHorizontalPadding()
+                    .padding(top = 16.dp),
+        )
+
+        OrDivider()
+
+        Button(
+            onClick = openCreateProfileScreen,
+            shape = RoundedCornerShape(8.dp),
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary,
+                ),
+            modifier =
+                Modifier
+                    .testTag("Authentication.SignUp")
+                    .fillMaxWidth()
+                    .defaultHorizontalPadding()
+                    .padding(top = 16.dp),
         ) {
-            UsernameInput(
-                value = username,
-                onValueChange = viewModel::updateUsername,
-                modifier =
-                    Modifier
-                        .testTag("Authentication.Username")
-                        .fillMaxWidth()
-                        .defaultHorizontalPadding()
-                        .padding(top = 16.dp),
-            )
+            Text(stringResource(Res.string.login_sign_up_button))
+        }
 
-            PasswordInput(
-                value = password,
-                onValueChange = viewModel::updatePassword,
-                modifier =
-                    Modifier
-                        .testTag("Authentication.Password")
-                        .fillMaxWidth()
-                        .defaultHorizontalPadding(),
-            )
-
-            LoadingStateButton(
-                onClick = viewModel::authenticate,
-                text = stringResource(Res.string.login_button),
-                isLoading = state is State.Loading,
-                modifier =
-                    Modifier
-                        .testTag("Authentication.Submit")
-                        .fillMaxWidth()
-                        .defaultHorizontalPadding()
-                        .padding(top = 16.dp),
-            )
-
-            OrDivider()
-
-            Button(
-                onClick = {
-                    navigator.push(CreateProfileScreen)
-                },
-                shape = RoundedCornerShape(8.dp),
-                colors =
-                    ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondary,
-                        contentColor = MaterialTheme.colorScheme.onSecondary,
-                    ),
-                modifier =
-                    Modifier
-                        .testTag("Authentication.SignUp")
-                        .fillMaxWidth()
-                        .defaultHorizontalPadding()
-                        .padding(top = 16.dp),
-            ) {
-                Text(stringResource(Res.string.login_sign_up_button))
-            }
-
-            TextButton(
-                onClick = {
-                    navigator.push(ForgotPasswordScreen())
-                },
-                shape = RoundedCornerShape(8.dp),
-                modifier =
-                    Modifier
-                        .testTag("Authentication.ForgotPassword")
-                        .fillMaxWidth()
-                        .defaultHorizontalPadding(),
-            ) {
-                Text(stringResource(Res.string.login_forgot_password_button))
-            }
+        TextButton(
+            onClick = openForgotPasswordScreen,
+            shape = RoundedCornerShape(8.dp),
+            modifier =
+                Modifier
+                    .testTag("Authentication.ForgotPassword")
+                    .fillMaxWidth()
+                    .defaultHorizontalPadding(),
+        ) {
+            Text(stringResource(Res.string.login_forgot_password_button))
         }
     }
 }
