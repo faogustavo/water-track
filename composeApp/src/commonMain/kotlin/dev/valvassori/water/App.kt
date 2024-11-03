@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import dev.valvassori.water.di.repositoryModule
 import dev.valvassori.water.di.viewModelModule
 import dev.valvassori.water.screen.routes.AuthRoutes
 import dev.valvassori.water.screen.routes.registerAppRoutes
@@ -17,7 +18,10 @@ fun App() {
 
     KoinApplication(
         application = {
-            modules(viewModelModule)
+            modules(
+                viewModelModule,
+                repositoryModule,
+            )
         },
     ) {
         AppTheme(

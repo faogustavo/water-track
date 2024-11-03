@@ -2,16 +2,21 @@ package dev.valvassori.water.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.valvassori.water.error.LoginError
+import dev.valvassori.water.ext.asState
+import dev.valvassori.water.ext.mapRightToUnit
 import dev.valvassori.water.helpers.State
+import dev.valvassori.water.repository.SessionRepository
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(
+    private val sessionRepository: SessionRepository,
+) : ViewModel() {
     private val _username = MutableStateFlow("")
     private val _password = MutableStateFlow("")
     private val _state =
@@ -35,16 +40,12 @@ class LoginViewModel : ViewModel() {
     fun authenticate() {
         viewModelScope.launch {
             _state.emit(State.Loading)
-            delay(2500)
-            _state.emit(State.Success(Unit))
+            _state.emit(
+                sessionRepository
+                    .login(username.value, password.value)
+                    .mapRightToUnit()
+                    .asState(),
+            )
         }
     }
-}
-
-sealed class LoginError {
-    data object NetworkError : LoginError()
-
-    data object ProfileNotFound : LoginError()
-
-    data object UnknownError : LoginError()
 }
