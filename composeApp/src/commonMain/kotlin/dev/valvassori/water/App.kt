@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import dev.valvassori.water.di.analyticsModule
 import dev.valvassori.water.di.repositoryModule
 import dev.valvassori.water.di.viewModelModule
 import dev.valvassori.water.screen.routes.AuthRoutes
@@ -21,6 +22,7 @@ fun App() {
             modules(
                 viewModelModule,
                 repositoryModule,
+                analyticsModule,
             )
         },
     ) {

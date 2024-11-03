@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import dev.valvassori.water.analytics.AnalyticsLogger
 import dev.valvassori.water.components.ErrorMessage
 import dev.valvassori.water.components.LoadingStateButton
 import dev.valvassori.water.components.OrDivider
@@ -30,7 +31,9 @@ import dev.valvassori.water.helpers.State
 import dev.valvassori.water.viewmodel.LoginViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import watertrack.composeapp.generated.resources.Res
 import watertrack.composeapp.generated.resources.login_button
 import watertrack.composeapp.generated.resources.login_forgot_password_button
@@ -39,9 +42,12 @@ import watertrack.composeapp.generated.resources.login_subtitle
 import watertrack.composeapp.generated.resources.login_title
 import watertrack.composeapp.generated.resources.pana_drink
 
+private const val PAGE_NAME = "Login"
+
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = koinViewModel(),
+    analyticsLogger: AnalyticsLogger = koinInject { parametersOf(PAGE_NAME) },
     openAuthenticatedScreen: () -> Unit = {},
     openCreateProfileScreen: () -> Unit = {},
     openForgotPasswordScreen: () -> Unit = {},
@@ -66,6 +72,15 @@ fun LoginScreen(
                 errorMessage = null
             }
         }
+    }
+
+    LaunchedEffect(PAGE_NAME) {
+        analyticsLogger.logPageView()
+    }
+
+    LaunchedEffect(errorMessage) {
+        val localErrorMessage = errorMessage ?: return@LaunchedEffect // No error, no log
+        analyticsLogger.logError(localErrorMessage)
     }
 
     BaseScreenBody(
