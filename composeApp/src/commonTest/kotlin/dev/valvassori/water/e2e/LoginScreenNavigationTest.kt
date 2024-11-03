@@ -1,4 +1,4 @@
-package dev.valvassori.water.integration
+package dev.valvassori.water.e2e
 
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
