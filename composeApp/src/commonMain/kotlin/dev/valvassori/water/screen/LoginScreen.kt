@@ -1,5 +1,6 @@
 package dev.valvassori.water.screen
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,10 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import dev.valvassori.water.components.ErrorMessage
 import dev.valvassori.water.components.LoadingStateButton
 import dev.valvassori.water.components.OrDivider
 import dev.valvassori.water.components.input.PasswordInput
@@ -46,16 +50,20 @@ fun LoginScreen(
     val password by viewModel.password.collectAsState()
     val state by viewModel.state.collectAsState(State.Idle)
 
+    var errorMessage: String? by remember { mutableStateOf(null) }
+
     LaunchedEffect(state) {
         when (state) {
-            is State.Error -> {
-                // TODO: Show Error
+            is State.Success -> {
+                openAuthenticatedScreen()
             }
 
-            is State.Success -> openAuthenticatedScreen()
+            is State.Error -> {
+                errorMessage = "Something went wrong"
+            }
 
             State.Loading, State.Idle -> {
-                // Do Nothing
+                errorMessage = null
             }
         }
     }
@@ -66,6 +74,19 @@ fun LoginScreen(
         subtitle = stringResource(Res.string.login_subtitle),
         modifier = Modifier.testTag("Screen.Login"),
     ) {
+        AnimatedContent(errorMessage) {
+            if (it != null) {
+                ErrorMessage(
+                    message = it,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .defaultHorizontalPadding()
+                            .padding(top = 16.dp),
+                )
+            }
+        }
+
         UsernameInput(
             value = username,
             onValueChange = viewModel::updateUsername,
@@ -74,7 +95,7 @@ fun LoginScreen(
                     .testTag("Authentication.Username")
                     .fillMaxWidth()
                     .defaultHorizontalPadding()
-                    .padding(top = 16.dp),
+                    .padding(top = if (errorMessage != null) 4.dp else 16.dp),
         )
 
         PasswordInput(
