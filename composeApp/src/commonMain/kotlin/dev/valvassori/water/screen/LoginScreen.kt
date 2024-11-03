@@ -26,6 +26,7 @@ import dev.valvassori.water.helpers.State
 import dev.valvassori.water.viewmodel.LoginViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import watertrack.composeapp.generated.resources.Res
 import watertrack.composeapp.generated.resources.login_button
 import watertrack.composeapp.generated.resources.login_forgot_password_button
@@ -36,7 +37,7 @@ import watertrack.composeapp.generated.resources.pana_drink
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = viewModel { LoginViewModel() },
+    viewModel: LoginViewModel = koinViewModel(),
     openAuthenticatedScreen: () -> Unit = {},
     openCreateProfileScreen: () -> Unit = {},
     openForgotPasswordScreen: () -> Unit = {},

@@ -47,6 +47,7 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
 
             implementation(libs.arrow.core)
+            implementation(libs.koin.compose)
         }
 
         commonTest.dependencies {

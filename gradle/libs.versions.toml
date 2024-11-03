@@ -16,6 +16,7 @@ compose-plugin = "1.7.0"
 junit = "4.13.2"
 kotlin = "2.0.20"
 arrow = "1.2.4"
+koin = "4.0.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -38,6 +39,8 @@ compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-co
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.7.0" }
 
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
+
+koin-compose = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koin" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
