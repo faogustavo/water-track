@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -144,6 +145,8 @@ fun LoginScreen(
         PasswordInput(
             value = password,
             onValueChange = viewModel::updatePassword,
+            keyboardActions = KeyboardActions { viewModel.authenticate() },
+            errorMessage = passwordValidation.messageOrNull?.let { stringResource(it) },
             modifier =
                 Modifier
                     .testTag("Authentication.Password")

@@ -4,6 +4,8 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Visibility
@@ -19,6 +21,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import org.jetbrains.compose.resources.stringResource
@@ -33,12 +38,16 @@ fun PasswordInput(
     value: String,
     onValueChange: (String) -> Unit,
     errorMessage: String? = null,
+    keyboardOptions: KeyboardOptions = PasswordInputDefaults.keyboardOptions(),
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     modifier: Modifier = Modifier,
 ) = PasswordInputImpl(
     value = value,
     onValueChange = onValueChange,
     label = stringResource(Res.string.password_input_label),
     errorMessage = errorMessage,
+    keyboardOptions = keyboardOptions,
+    keyboardActions = keyboardActions,
     modifier = modifier,
 )
 
@@ -47,12 +56,16 @@ fun ConfirmPasswordInput(
     value: String,
     onValueChange: (String) -> Unit,
     errorMessage: String? = null,
+    keyboardOptions: KeyboardOptions = PasswordInputDefaults.keyboardOptions(),
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     modifier: Modifier = Modifier,
 ) = PasswordInputImpl(
     value = value,
     onValueChange = onValueChange,
     label = stringResource(Res.string.password_confirmation_input_label),
     errorMessage = errorMessage,
+    keyboardOptions = keyboardOptions,
+    keyboardActions = keyboardActions,
     modifier = modifier,
 )
 
@@ -62,6 +75,8 @@ private fun PasswordInputImpl(
     onValueChange: (String) -> Unit,
     label: String,
     errorMessage: String?,
+    keyboardOptions: KeyboardOptions,
+    keyboardActions: KeyboardActions,
     modifier: Modifier,
 ) {
     var isPasswordHidden by remember { mutableStateOf(true) }
@@ -108,6 +123,18 @@ private fun PasswordInputImpl(
                 }
             }
         },
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         modifier = Modifier.then(modifier),
     )
+}
+
+object PasswordInputDefaults {
+    fun keyboardOptions(imeAction: ImeAction = ImeAction.Done) =
+        KeyboardOptions(
+            capitalization = KeyboardCapitalization.None,
+            autoCorrectEnabled = false,
+            keyboardType = KeyboardType.Password,
+            imeAction = imeAction,
+        )
 }

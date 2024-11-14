@@ -20,8 +20,8 @@ class SessionRepositoryImpl : SessionRepository {
         password: String,
     ): Either<LoginError, Profile> {
         return when (username) {
-            "john" -> {
-                if (password == "doe") {
+            "john.doe" -> {
+                if (password == "password") {
                     delay(2500)
                     return Profile(username, "$username@email.com").right()
                 }
