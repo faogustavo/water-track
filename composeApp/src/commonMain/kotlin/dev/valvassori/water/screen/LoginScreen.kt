@@ -13,11 +13,14 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import dev.valvassori.water.analytics.AnalyticsLogger
@@ -29,9 +32,11 @@ import dev.valvassori.water.components.input.UsernameInput
 import dev.valvassori.water.components.screen.BaseScreenBody
 import dev.valvassori.water.error.LoginError
 import dev.valvassori.water.ext.defaultHorizontalPadding
+import dev.valvassori.water.ext.messageOrNull
 import dev.valvassori.water.helpers.State
 import dev.valvassori.water.validator.UsernameValidator
 import dev.valvassori.water.viewmodel.LoginViewModel
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -59,58 +64,68 @@ fun LoginScreen(
     openCreateProfileScreen: () -> Unit = {},
     openForgotPasswordScreen: () -> Unit = {},
 ) {
+    val focusManager = LocalFocusManager.current
+
     val username by viewModel.username.collectAsState()
+    var usernameFocused by remember { mutableStateOf(false) }
     val usernameValidation by viewModel.usernameValidation.collectAsState(UsernameValidator.ValidationState.Valid)
+    val usernameValidationMessage: StringResource? by remember {
+        derivedStateOf { usernameValidation.messageOrNull.takeIf { !usernameFocused } }
+    }
 
     val password by viewModel.password.collectAsState()
+    var passwordFocused by remember { mutableStateOf(false) }
     val passwordValidation by viewModel.passwordValidation.collectAsState()
+    val passwordValidationMessage: StringResource? by remember {
+        derivedStateOf { passwordValidation.messageOrNull.takeIf { !passwordFocused } }
+    }
 
     val state by viewModel.state.collectAsState(State.Idle)
+    val errorMessage: StringResource? by remember {
+        derivedStateOf {
+            when (val localState = state) {
+                is State.Error ->
+                    when (localState.error) {
+                        LoginError.IncorrectCredentials -> Res.string.error_invalid_credentials
+                        LoginError.NetworkError -> Res.string.error_network
+                        LoginError.UnknownError -> Res.string.error_unknown
+                    }
 
-    var errorMessage: String? by remember { mutableStateOf(null) }
+                else -> null
+            }
+        }
+    }
 
     LaunchedEffect(PAGE_NAME) {
         analyticsLogger.logPageView()
     }
 
     LaunchedEffect(state) {
-        when (val localState = state) {
+        when (state) {
             is State.Success -> {
                 openAuthenticatedScreen()
             }
 
-            is State.Error -> {
-                errorMessage =
-                    getString(
-                        when (localState.error) {
-                            LoginError.IncorrectCredentials -> Res.string.error_invalid_credentials
-                            LoginError.NetworkError -> Res.string.error_network
-                            LoginError.UnknownError -> Res.string.error_unknown
-                        },
-                    )
-            }
-
-            State.Loading, State.Idle -> {
-                errorMessage = null
-            }
+            else -> {}
         }
     }
 
     LaunchedEffect(errorMessage) {
         val localErrorMessage = errorMessage ?: return@LaunchedEffect
-        analyticsLogger.logError(localErrorMessage)
+        analyticsLogger.logError(getString(localErrorMessage))
     }
 
-    LaunchedEffect(usernameValidation) {
-        val usernameErrorMessage = usernameValidation.messageOrNull ?: return@LaunchedEffect
+    LaunchedEffect(usernameValidationMessage) {
+        val usernameErrorMessage = usernameValidationMessage ?: return@LaunchedEffect
         analyticsLogger.logError(getString(usernameErrorMessage))
     }
 
-    LaunchedEffect(passwordValidation) {
-        val passwordErrorMessage = passwordValidation.messageOrNull ?: return@LaunchedEffect
+    LaunchedEffect(passwordValidationMessage) {
+        val passwordErrorMessage = passwordValidationMessage ?: return@LaunchedEffect
         analyticsLogger.logError(getString(passwordErrorMessage))
     }
 
+    // Render UI
     BaseScreenBody(
         image = painterResource(Res.drawable.pana_drink),
         title = stringResource(Res.string.login_title),
@@ -120,7 +135,7 @@ fun LoginScreen(
         AnimatedContent(errorMessage) {
             if (it != null) {
                 ErrorMessage(
-                    message = it,
+                    message = stringResource(it),
                     modifier =
                         Modifier
                             .fillMaxWidth()
@@ -133,29 +148,38 @@ fun LoginScreen(
         UsernameInput(
             value = username,
             onValueChange = viewModel::updateUsername,
-            errorMessage = usernameValidation.messageOrNull?.let { stringResource(it) },
+            errorMessage = usernameValidationMessage?.let { stringResource(it) },
             modifier =
                 Modifier
                     .testTag("Authentication.Username")
                     .fillMaxWidth()
                     .defaultHorizontalPadding()
-                    .padding(top = if (errorMessage != null) 4.dp else 16.dp),
+                    .padding(top = if (errorMessage != null) 4.dp else 16.dp)
+                    .onFocusChanged { usernameFocused = it.isFocused },
         )
 
         PasswordInput(
             value = password,
             onValueChange = viewModel::updatePassword,
-            keyboardActions = KeyboardActions { viewModel.authenticate() },
-            errorMessage = passwordValidation.messageOrNull?.let { stringResource(it) },
+            keyboardActions =
+                KeyboardActions {
+                    focusManager.clearFocus(force = true)
+                    viewModel.authenticate()
+                },
+            errorMessage = passwordValidationMessage?.let { stringResource(it) },
             modifier =
                 Modifier
                     .testTag("Authentication.Password")
                     .fillMaxWidth()
-                    .defaultHorizontalPadding(),
+                    .defaultHorizontalPadding()
+                    .onFocusChanged { passwordFocused = it.isFocused },
         )
 
         LoadingStateButton(
-            onClick = viewModel::authenticate,
+            onClick = {
+                focusManager.clearFocus(force = true)
+                viewModel.authenticate()
+            },
             text = stringResource(Res.string.login_button),
             isLoading = state is State.Loading,
             modifier =

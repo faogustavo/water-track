@@ -21,9 +21,13 @@ class AuthenticationTest {
 
             waitUntilAtLeastOneExists(hasTestTag("Screen.Login"))
 
-            onNodeWithTag("Authentication.Username").performTextInput("john.doe")
-            onNodeWithTag("Authentication.Password").performTextInput("password")
-            onNodeWithTag("Authentication.Submit").performScrollTo().performClick()
+            onNodeWithTag("Authentication.Username")
+                .performTextInput("john.doe")
+            onNodeWithTag("Authentication.Password")
+                .performTextInput("password")
+            onNodeWithTag("Authentication.Submit")
+                .performScrollTo()
+                .performClick()
 
             waitUntilAtLeastOneExists(hasText("Home"), 5_000)
         }

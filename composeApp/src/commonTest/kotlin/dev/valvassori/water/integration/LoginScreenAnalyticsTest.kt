@@ -25,7 +25,7 @@ import dev.valvassori.water.screen.LoginScreen
 import dev.valvassori.water.viewmodel.LoginViewModel
 import watertrack.composeapp.generated.resources.Res
 import watertrack.composeapp.generated.resources.password_validation_short
-import watertrack.composeapp.generated.resources.username_validation_short
+import watertrack.composeapp.generated.resources.username_validation_invalid_char
 import kotlin.test.Test
 
 @OptIn(ExperimentalTestApi::class)
@@ -53,13 +53,16 @@ class LoginScreenAnalyticsTest {
             renderLoginScreen()
 
             onNodeWithTag("Authentication.Username")
-                .performTextInput("a")
+                .performTextInput("invalid.username&")
+
+            onNodeWithTag("Authentication.Password")
+                .performClick()
 
             waitForIdle()
 
             verify(mode = VerifyMode.exactly(1)) {
                 analyticsLogger.logError(
-                    getString(Res.string.username_validation_short),
+                    getString(Res.string.username_validation_invalid_char),
                 )
             }
         }
@@ -73,6 +76,9 @@ class LoginScreenAnalyticsTest {
 
             onNodeWithTag("Authentication.Password")
                 .performTextInput("less")
+
+            onNodeWithTag("Authentication.Username")
+                .performClick()
 
             waitForIdle()
 
@@ -112,7 +118,7 @@ class LoginScreenAnalyticsTest {
                 .performTextInput("john.doe")
 
             onNodeWithTag("Authentication.Password")
-                .performTextInput("password")
+                .performTextInput("wrong-password")
 
             onNodeWithTag("Authentication.Submit")
                 .performScrollTo()
